@@ -30,7 +30,9 @@
             </div>
             <div id="error" class="text-center text-red-600 hidden"></div>
             <div id="quiz-content" class="hidden">
-                <div id="word" class="japanese-text text-center text-gray-800 mb-4"></div>
+                <div id="word" class="japanese-text text-center text-gray-800 mb-2"></div>
+                <div id="romaji" class="text-xl text-center text-gray-600 mb-2"></div>
+                <div id="jlpt-level" class="text-sm text-center text-gray-500 mb-4"></div>
                 <input type="text" id="answer" placeholder="Enter the English translation" class="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-600 transition-all mb-4">
                 <div class="flex justify-center space-x-4">
                     <button id="submit" class="bg-gray-800 text-white px-6 py-2 rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-opacity-50 transition-all">Submit</button>
@@ -74,11 +76,23 @@
 
             currentWord = getRandomWord();
             const wordElement = document.getElementById('word');
+            const romajiElement = document.getElementById('romaji');
+            const jlptLevelElement = document.getElementById('jlpt-level');
+            
             wordElement.style.opacity = '0';
+            romajiElement.style.opacity = '0';
+            jlptLevelElement.style.opacity = '0';
+            
             setTimeout(() => {
                 wordElement.textContent = currentWord.word;
+                romajiElement.textContent = currentWord.romaji;
+                jlptLevelElement.textContent = `JLPT Level: ${currentWord.level}`;
+                
                 wordElement.style.opacity = '1';
+                romajiElement.style.opacity = '1';
+                jlptLevelElement.style.opacity = '1';
             }, 300);
+            
             document.getElementById('answer').value = '';
             document.getElementById('result').textContent = '';
             document.getElementById('submit').classList.remove('hidden');
