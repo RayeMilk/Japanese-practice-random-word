@@ -17,7 +17,7 @@ You can access the demo of the application [here](#).
 
 1. **Clone the repository**:
     ```bash
-    git clone https://github.com/your-username/japanese-learning-quiz.git
+    git clone https://github.com/RayeMilk/japanese-learning-quiz.git
     ```
 2. **Navigate to the project directory**:
     ```bash
@@ -64,5 +64,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Contact
 
 For any questions or suggestions, please contact:
-- **Your Name** - [your-email@example.com](mailto:your-email@example.com)
-- GitHub: [@your-username](https://github.com/your-username)
+- **Your Name** - comscigirls@gmail.com
+- GitHub: yes this github account bro
