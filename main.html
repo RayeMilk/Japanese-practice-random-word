@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Japanese Learning Quiz</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f3e5d8;
+        }
+        .japanese-text {
+            font-size: 3rem;
+            font-weight: 600;
+        }
+        .latte-gradient {
+            background: linear-gradient(135deg, #e6d2b5, #c7a17a);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+    <div class="bg-white rounded-lg shadow-2xl p-8 max-w-md w-full latte-gradient">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Japanese Learning Quiz</h1>
+        <div id="quiz-container" class="space-y-6">
+            <div id="loading" class="text-center">
+                <div class="animate-spin rounded-full h-16 w-16 border-b-2 border-gray-800 mx-auto"></div>
+                <p class="mt-4 text-gray-800">Loading words...</p>
+            </div>
+            <div id="error" class="text-center text-red-600 hidden"></div>
+            <div id="quiz-content" class="hidden">
+                <div id="word" class="japanese-text text-center text-gray-800 mb-4"></div>
+                <input type="text" id="answer" placeholder="Enter the English translation" class="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-600 transition-all mb-4">
+                <div class="flex justify-center space-x-4">
+                    <button id="submit" class="bg-gray-800 text-white px-6 py-2 rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-opacity-50 transition-all">Submit</button>
+                    <button id="next" class="bg-green-500 text-white px-6 py-2 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition-all hidden">Next Word</button>
+                </div>
+                <div id="result" class="text-center font-semibold mt-4"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const apiUrl = 'https://jlpt-vocab-api.vercel.app/api/words/all';
+        let words = [];
+        let currentWord;
+
+        async function fetchWords() {
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+                words = data;
+                document.getElementById('loading').classList.add('hidden');
+                document.getElementById('quiz-content').classList.remove('hidden');
+                displayWord();
+            } catch (error) {
+                console.error('Error fetching words:', error);
+                document.getElementById('loading').classList.add('hidden');
+                document.getElementById('error').textContent = 'Error loading words. Please try again later.';
+                document.getElementById('error').classList.remove('hidden');
+            }
+        }
+
+        function getRandomWord() {
+            return words[Math.floor(Math.random() * words.length)];
+        }
+
+        function displayWord() {
+            if (words.length === 0) return;
+
+            currentWord = getRandomWord();
+            const wordElement = document.getElementById('word');
+            wordElement.style.opacity = '0';
+            setTimeout(() => {
+                wordElement.textContent = currentWord.word;
+                wordElement.style.opacity = '1';
+            }, 300);
+            document.getElementById('answer').value = '';
+            document.getElementById('result').textContent = '';
+            document.getElementById('submit').classList.remove('hidden');
+            document.getElementById('next').classList.add('hidden');
+        }
+
+        function checkAnswer() {
+            const userAnswer = document.getElementById('answer').value.toLowerCase().trim();
+            const correctAnswers = currentWord.meaning.toLowerCase().split(',').map(answer => answer.trim());
+            const resultElement = document.getElementById('result');
+
+            resultElement.style.opacity = '0';
+            setTimeout(() => {
+                if (correctAnswers.includes(userAnswer)) {
+                    resultElement.textContent = 'Correct!';
+                    resultElement.className = 'text-center font-semibold mt-4 text-green-600';
+                } else {
+                    resultElement.textContent = `Incorrect. The correct answer(s) are: "${currentWord.meaning}".`;
+                    resultElement.className = 'text-center font-semibold mt-4 text-red-600';
+                }
+                resultElement.style.opacity = '1';
+            }, 300);
+
+            document.getElementById('submit').classList.add('hidden');
+            document.getElementById('next').classList.remove('hidden');
+        }
+
+        document.getElementById('submit').addEventListener('click', checkAnswer);
+        document.getElementById('next').addEventListener('click', displayWord);
+
+        // Initialize the quiz
+        fetchWords();
+    </script>
+</body>
+</html>
